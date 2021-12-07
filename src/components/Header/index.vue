@@ -28,7 +28,7 @@
     <div class="bottom">
       <h1 class="logoArea">
         <router-link class="logo" to="/home">
-          <img src="./images/logo.png" alt="" />
+          <img src="./images/logo.png" alt=""/>
         </router-link>
       </h1>
       <div class="searchArea">
@@ -126,7 +126,7 @@ export default {
 
       .logo {
         img {
-          width: 175px;
+          width: 50px;
           margin: 25px 45px;
         }
       }
