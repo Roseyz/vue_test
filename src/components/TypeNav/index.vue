@@ -5,36 +5,21 @@
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
         <div class="sort">
-          <div class="all-sort-list2">
-            <div
-              class="item"
-              :key="c1.categoryId"
-              :class="{ cur: currentIndex == index }"
-              v-for="(c1, index) in categoryList"
-            >
+          <div class="all-sort-list2" @click="goSearch">
+            <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId" :class="{ cur: currentIndex == index }"   >
               <h3 @mouseenter="changeIndex(index)">
-                <a href="">{{ c1.categoryName }}-{{ index }}</a>
+                <a :data-categoryName="c1.categoryName" data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
               </h3>
               <!-- 二级、三级分类 -->
-              <div
-                class="item-list clearfix"
-                :style="{ display: currentIndex == index ? 'block' : 'none' }"
-              >
-                <div
-                  class="subitem"
-                  v-for="(c2, index) in c1.categoryChild"
-                  :key="c2.categoryId"
-                >
+              <div class="item-list clearfix" :style="{ display: currentIndex == index ? 'block' : 'none' }" >
+                <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId" >
                   <dl class="fore">
                     <dt>
-                      <a href="">{{ c2.categoryName }}</a>
+                      <a :data-categoryName="c2.categoryName" data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
                     </dt>
                     <dd>
-                      <em
-                        v-for="(c3, index) in c2.categoryChild"
-                        :key="c3.categoryId"
-                      >
-                        <a href="">{{ c3.categoryName }}</a>
+                      <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId" >
+                        <a :data-categoryName="c3.categoryName" data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
                       </em>
                     </dd>
                   </dl>
@@ -60,6 +45,8 @@
 
 <script>
 import { mapState } from "vuex";
+import throttle from "lodash/throttle";
+// import { component } from 'vue/types/umd';
 export default {
   name: "TypeNav",
   data() {
@@ -82,15 +69,39 @@ export default {
   },
   methods: {
     // 鼠标进入修改响应式数据currentIndex属性
-    changeIndex(index) {
+    changeIndex:throttle(function(index) {
       // index:鼠标移上某一个一级分类的元素的索引值
       this.currentIndex = index;
-    },
+    },50),
     // 一级分类鼠标移出的事件回调
     leaveIndex() {
       // 鼠标移出currentIndex，变为-1
       this.currentIndex = -1;
     },
+    goSearch(event){
+      // 最好的解决方案：编程式导航+事件委派
+      // 利用事件委派存在一些问题：1.点击的一定是a标签  2.如何获取参数【1、2、3级分类的产品的名字、id】
+      let element = event.target;
+      let {categoryname,category1id,category2id,category3id}=element.dataset; 
+      if(categoryname){
+        let location={name:'search'};
+        let query = {categoryName:categoryname};
+        if(category1id){
+          query.category1Id=category1id;
+
+        }else if(category2id){
+          query.category2Id=category2id;
+
+        }else if(category3id){
+          query.category3Id=category3id;
+
+        }
+
+        location.query = query;
+        this.$router.push(location);
+        
+      }
+    }
   },
 };
 </script>

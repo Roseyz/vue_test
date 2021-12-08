@@ -1,14 +1,14 @@
 <template>
   <div>
-      <h1>params参数----{{$route.params.keyword}}-----{{keyword}}</h1>
-      <h1>query参数---{{$route.query.k}}---{{k}}</h1>
+    <!-- 这是Search模块 -->
+    <typeNav/>
   </div>
 </template>
 
 <script>
 export default {
   name:'',
-  props:['keyword','k']
+  // props:['keyword','big']
 
 }
 </script>
